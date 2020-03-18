@@ -13,11 +13,22 @@
                         <form class="form-horizontal" method="POST" action="{{ route('register') }}">
                             {{ csrf_field() }}
 
+                            <div class="form-group">
+                                <label for="role" class="col-md-4 control-label">Role</label>
+                                <div class="col-md-6">
+                                    <select name="role" class="form-control">
+                                        <option value="">Pilih Role</option>
+                                        <option value="admin"> Admin </option>
+                                        <option value="kasir"> Kasir </option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
                                 <label for="name" class="col-md-4 control-label">Name</label>
 
                                 <div class="col-md-6">
-                                    <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autofocus>
+                                    <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autocomplete="off">
 
                                     @if ($errors->has('name'))
                                         <span class="help-block">

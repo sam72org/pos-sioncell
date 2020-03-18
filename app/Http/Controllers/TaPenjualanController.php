@@ -16,9 +16,9 @@ use PDF;
 class TaPenjualanController extends Controller
 {
     public function Index() {
-        // $model = TaPenjualan::orderBy('id', 'DESC')->get();
-        $model = TaPenjualan::all();
-    	return view('ta-penjualan/index', ['model' => $model]);
+        $model  = TaPenjualan::orderBy('id', 'DESC')->get();
+        $user   = auth()->user();
+    	return view('ta-penjualan/index', ['model' => $model, 'user' => $user]);
     }
 
     public function GetPenjualan() {
@@ -35,10 +35,10 @@ class TaPenjualanController extends Controller
 
     public function NewTransaction(Request $request) {
         // $request->session()->flush();
+        // $request->session()->forget('orders');
 
         if($request->session()->has('orders')) {
             $session_order =  $request->session()->get('orders');
-            // print_r($session_order);die();
         }
         else {
             $session_order = session('orders');
@@ -50,74 +50,156 @@ class TaPenjualanController extends Controller
         		->get();
 
         if (!isset($kode[0])) {
-            $last_kode = "SC-000000";
+            $last_kode = "PJ-00000000";
         }
         else {
             $last_kode = $kode[0]->no_penjualan;
         }
         
-        $kodePJ = substr($last_kode, 3, 6);
+        $kodePJ = substr($last_kode, 3, 8);
         $kodePJ++;
-        $no_penjualan = 'SC-' . sprintf('%06s', $kodePJ);
+        $no_penjualan = 'PJ-' . sprintf('%08s', $kodePJ);
 
-        $members = RefPelanggan::all();
-
-        return view('ta-penjualan/form', ['no_penjualan' => $no_penjualan, 'session_order' => $session_order, 'members' => $members]);
+        return view('ta-penjualan/form', ['no_penjualan' => $no_penjualan, 'session_order' => $session_order]);
     }
 
     public function addList(Request $request) {
-    
-        if ($request->session()->has('orders')) {
-            $session_order =  $request->session()->get('orders');
-        }
+        $item   = RefBarang::where('kode_barcode', $request->barcode)->first();
+        $orders = $request->session()->get('orders', []);
 
-        $session_order = $request->session()->push('orders', [
-            'id' => $request->id, 
-            'qty' => $request->qty,
-            'harga' => $request->harga,
-        ]);
+        // Check session sudah ada/tidak //
+        if ($request->session()->has('orders')) {
+            $orders = $request->session()->get('orders', []);
+
+            // Cek data dalam sesssion, jika tidak ada tambah data dalam session, jika sudah ada tambah jumlah quantity //
+            if (!in_array($item->id, array_column($orders, 'id'))) {
+                $request->session()->push('orders', ['id' => $item->id, 'qty' => 1, 'harga' => $item->harga_jual]);
+            }
+            else {
+                // foreach ($orders as $key => $order) {
+                //     if ($order['id'] == $item->id) {
+                //         $order['qty']++;
+                //         break;
+                //     }
+                // }
+                // $request->session()->put('orders.' . $key, $order);
+                foreach ($orders as $key => $order) {
+                    if ($order['id'] == $item->id) {
+                        $stok = $item->stok - $order['qty'];
+                        if ($stok > 0) {
+                            $order['qty']++;
+                            break;
+                        } 
+                        else {
+                            return 0;
+                        }
+                    }
+                }
+                $request->session()->put('orders.' . $key, $order);
+            }
+        }
+        else {
+            $request->session()->push('orders', ['id' => $item->id, 'qty' => 1, 'harga' => $item->harga_jual]);
+        }
     }
 
-    public function deleteList(Request $request) {
-        $item = $request->id;
+    public function tambahQtyList(Request $request) {
+        $id     = $request->id;
+        $item   = RefBarang::where('id', $id)->first();
+        $orders = $request->session()->get('orders', []);
 
-        foreach ($request->session()->get('orders', []) as $id => $entries) {
-            if ($entries['id'] === $item) {
-                $request->session()->forget('orders.' . $id);
+        foreach ($orders as $key => $order) {
+            if ($order['id'] == $id) {
+                $stok = $item->stok - $order['qty'];
+                if ($stok > 0) {
+                    $order['qty']++;
+                    break;
+                } 
+                else {
+                    return 0;
+                }
+            }
+        }
+        $request->session()->put('orders.' . $key, $order);
+    }
+
+    public function kurangQtyList(Request $request) {
+        $id     = $request->id;
+        $orders = $request->session()->get('orders', []);
+        $q      = count($orders);
+
+        foreach ($orders as $key => $order) {
+            if ($order['id'] == $id) {
+                $order['qty']--;
                 break; // stop loop
             }
         }
 
-        $session_order =  $request->session()->get('orders');
+        if ($order['qty'] == 0 AND $q > 1) {
+            $request->session()->forget('orders.' . $key);
+        }
+        else if ($order['qty'] == 0 AND $q == 1) {
+            $request->session()->forget('orders');
+        }
+        else {
+            $request->session()->put('orders.' . $key, $order);
+        }
     }
 
-    public function getMenu() {
-        $model = RefMenu::all();
+    public function deleteList(Request $request) {
+        $id     = $request->id;
+        $orders = $request->session()->get('orders', []);
+        $q      = count($orders);
+        
+        foreach ($orders as $key => $order) {
+            if ($order['id'] == $id AND $q > 1) {
+                $request->session()->forget('orders.' . $key);
+                break;
+            }
+            else if ($order['id'] AND $q == 1) {
+                $request->session()->forget('orders');
+                break;
+            }
+        }
+    }
 
-        return Datatables::of($model)
-        ->addColumn('action', function($model) {
-            return
-            '<button class="btn btn-small btn-success btn-pilih" data-id="'.$model->id.'" data-kode="'.$model->kode.'" data-menu="'.$model->menu.'" data-harga="'.$model->harga.'"><i class="fa  fa-check-square-o"></i></button>';
-        })
-        ->make(true);
+    public function changePriceList(Request $request) {
+        $id     = $request->id;
+        $harga  = $request->harga_jual;
+        $orders = $request->session()->get('orders', []);
+        
+        foreach ($orders as $key => $order) {
+            if ($order['id'] == $id) {
+                $order['harga'] = $harga;
+                break;
+            }
+        }
+        $request->session()->put('orders.' . $key, $order);
+    }
+
+    public function GetBarang(Request $request) {
+        $kode_barcode = $request->kode_barcode;
+        $model = RefBarang::where('kode_barcode', $kode_barcode)->first();
+        return $model;
     }
 
     public function SaveTransaction(Request $request) {
         $session_order = $request->session()->get('orders');
+        $user          = auth()->user();
 
         $model = new TaPenjualan;
         $model->no_penjualan        = $request->no_penjualan;
-        $model->user_id             = 1;
-        $model->pelanggan_id        = $request->pelanggan_id;
+        $model->user_id             = $user->id;
+        $model->pelanggan_id        = 0;
         $model->grand_total         = $request->total;
         $model->status_pembayaran   = 0;
-        $model->tgl_penjualan       = date('Y-m-d', strtotime($request->tgl_penjualan));
-        $model->tgl_jatuh_tempo     = date('Y-m-d', strtotime($request->tgl_jatuh_tempo));
 
         if ($model->save()) {
+
             foreach ($session_order as $key => $value) {
 
                 $model2 = new TaDetailPenjualan;
+                $model2->ta_penjualan_id = $model->id;
                 $model2->no_penjualan = $request->no_penjualan;
                 $model2->barang_id = $value['id'];
                 $model2->qty = $value['qty'];
@@ -125,33 +207,13 @@ class TaPenjualanController extends Controller
                 $model2->sub_total = $value['harga'] * $value['qty'];
 
                 if ($model2->save()) {
-                    $model3 = new TaHistoryBarang;
-                    $model3->no_transaksi = $request->no_penjualan;
-                    $model3->barang_id = $value['id'];
-                    $model3->qty = $value['qty'];
-                    $model3->tipe = "Keluar";
-                    $model3->keterangan = "Penjualan Barang";
-                    $model3->tanggal = date('Y-m-d', strtotime($request->tgl_penjualan));
-                    $model3->user_id = 1;
-
-                    if ($model3->save()) {
-                        $stok = RefBarang::where('id', $value['id'])->first();
-                        $stok->stok -= $model2->qty;
-                    
-                        if ($stok->save()) {
-                            $stok = RefBarang::where('id', $value['id'])->first();
-                            $history = TaHistoryBarang::where('barang_id', $value['id'])
-                                        ->where('no_transaksi', $request->no_penjualan)
-                                        ->first();
-                            $history->stok = $stok->stok;
-                            $history->save();
-                        }
-                    }     
+                    $stok = RefBarang::where('id', $value['id'])->first();
+                    $stok->stok -= $model2->qty;
+                    $stok->save();
                 }
             }
 
             $request->session()->forget('orders');
-            // $request->session()->flush();
         }
     }
 
@@ -176,9 +238,15 @@ class TaPenjualanController extends Controller
         $pdf = PDF::loadview('ta-penjualan/print-struk', [
             'model' => $model, 
             'no_penjualan' => $no_penjualan,
-        // ])->setPaper('a4', 'landscape');
-        ])->setPaper([0, 0, 612, 396]);
+        // ])->setPaper('a4', 'portrait');
+        ])->setPaper([0, 0, 396, 512]);
+        // ])->setPaper([0, 0, 612, 396]);
 
         return $pdf->stream();
+    }
+
+    public function ListItemSold() {
+        $model  = TaDetailPenjualan::orderBy('id', 'ASC')->get();
+        return view('ta-penjualan/list-item-sold', ['model' => $model]);
     }
 }

@@ -20,7 +20,7 @@
         <!-- Default box -->
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Title</h3>
+                <p><a href="{{ url('ref-distributor/index') }}" class="btn btn-flat btn-primary" title="Lihat Data Distributor"><i class="fa fa-list"></i> Lihat Data</a></p>
             </div>
 
             <div class="box-body">

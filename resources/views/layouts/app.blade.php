@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
+    <title>WELLPOS</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -54,7 +54,7 @@
     }
 </style>
 
-<body class="hold-transition skin-green layout-top-nav">
+<body class="hold-transition skin-blue layout-top-nav">
     <div class="wrapper">
 
         @include('layouts.header')
@@ -77,7 +77,10 @@
 <script src="{{url('adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
 <!-- Bootstrap JavaScript -->
 <script src="{{url('adminlte/bower_components/bootstrap/dist/js/bootstrap.min.js')}}"></script>
-<script src="{{url('js/order.js')}}"></script>
+
+<script src="{{url('js/money.js')}}"></script>
+<script src="{{url('js/penjualan.js')}}"></script>
+<script src="{{url('js/pembelian.js')}}"></script>
 <script src="{{url('js/jquery-maskmoney.js')}}"></script>
 
 <script>

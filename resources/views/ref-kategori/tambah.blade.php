@@ -20,7 +20,7 @@
         <!-- Default box -->
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Title</h3>
+                <p><a href="{{ url('ref-kategori/index') }}" class="btn btn-flat btn-primary" title="Lihat Data Kategori"><i class="fa fa-list"></i> Lihat Data</a></p>
             </div>
 
             <div class="box-body">
@@ -32,6 +32,13 @@
                         @endforeach
                     </ul>
                 </div>
+                @endif
+
+                @if ($message = Session::get('success'))
+                  <div class="alert alert-success alert-block">
+                    <button type="button" class="close" data-dismiss="alert">×</button> 
+                      <strong>{{ $message }}</strong>
+                  </div>
                 @endif
 
                 <form action="{{ url('ref-kategori/create') }}" method="post">

@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class RefBarang extends Model
 {
     protected $table = "ref_barang";
-
-    protected $fillable = ['nama_barang', 'kategori_id', 'harga_beli', 'stok'];
+    protected $fillable = ['nama_barang', 'kode_barcode', 'kategori_id', 'harga_beli', 'harga_jual', 'harga_nego', 'stok'];
 
     public function kategori() {
     	return $this->belongsTo('App\RefKategori');

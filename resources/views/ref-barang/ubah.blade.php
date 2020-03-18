@@ -20,13 +20,18 @@
       <!-- Default box -->
       <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title">Form Ubah Barang</h3>
+                <p><a href="{{ url('ref-barang/index') }}" class="btn btn-flat btn-primary" title="Lihat Data Barang"><i class="fa fa-list"></i> Lihat Data</a></p>
         </div>
 
         <div class="box-body">
             <form action="{{ url('ref-barang/update').'/'.$model->id }}" method="post">
                 {{ csrf_field() }}
                 {{ method_field('POST') }}
+
+                <div class="form-group">
+                    <label for="">Barcode</label>
+                    <input type="text" name="kode_barcode" value="{{ $model->kode_barcode }}" autocomplete="off" class="form-control">
+                </div>
 
                 <div class="form-group">
                     <label>Kategori</label>
@@ -44,8 +49,21 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="">Harga Beli</label>
-                    <input type="text" name="harga_beli" value="{{ $model->harga_beli }}" autocomplete="off" class="form-control">
+                    <label for="">Harga Modal</label>
+                    <input type="text" name="harga_beli2" value="{{ $model->harga_beli }}" class="form-control money" autocomplete="off" id="harga_beli2">
+                    <input type="hidden" name="harga_beli" value="{{ $model->harga_beli }}" id="harga_beli">
+                </div>
+
+                <div class="form-group">
+                    <label for="">Harga Jual</label>
+                    <input type="text" name="harga_jual2" value="{{ $model->harga_jual }}" class="form-control money" autocomplete="off" id="harga_jual2">
+                    <input type="hidden" name="harga_jual" value="{{ $model->harga_jual }}" id="harga_jual">
+                </div>
+
+                <div class="form-group">
+                    <label for="">Harga Nego</label>
+                    <input type="text" name="harga_nego2" value="{{ $model->harga_nego }}" class="form-control money" autocomplete="off" id="harga_nego2">
+                    <input type="hidden" name="harga_nego" value="{{ $model->harga_nego }}" id="harga_nego">
                 </div>
 
                 <div class="form-group">
@@ -62,3 +80,30 @@
 
     </section>
 @endsection
+
+@push('scripts')
+<script>
+
+$('#harga_beli2').blur(function() {
+    var harga_beli2 = $('#harga_beli2').val();
+    var harga_beli = harga_beli2.split(".").join("");
+    $('#harga_beli').val(harga_beli);
+    
+});
+
+$('#harga_jual2').blur(function() {
+    var harga_jual2 = $('#harga_jual2').val();
+    var harga_jual = harga_jual2.split(".").join("");
+    $('#harga_jual').val(harga_jual);
+    
+});
+
+$('#harga_nego2').blur(function() {
+    var harga_nego2 = $('#harga_nego2').val();
+    var harga_nego = harga_nego2.split(".").join("");
+    $('#harga_nego').val(harga_nego);
+    
+});
+
+</script>
+@endpush

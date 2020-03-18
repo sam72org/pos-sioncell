@@ -1,6 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
+
+    <style type="text/css">
+        .table-bordered {
+            border : 1px solid #d1d1d1;
+        }
+        .table-bordered > tbody > tr > td {
+            border : 1px solid #d1d1d1;
+        }
+        .table-bordered > thead > tr > th {
+            border : 1px solid #d1d1d1;
+        }
+    </style>
     
     <section class="content-header">
         <h1>
@@ -20,15 +32,21 @@
     <!-- Default box -->
     <div class="box">
         <div class="box-header with-border">
-            <p><a href="{{ url('ref-distributor/tambah') }}" class="btn btn-flat btn-primary"><i class="fa fa-plus"></i> Tambah Distributor Baru</a></p>
+            <p><a href="{{ url('ref-distributor/tambah') }}" class="btn btn-flat btn-primary" title="Tambah Data Distributor"><i class="fa fa-plus"></i> Tambah Baru</a></p>
         </div>
 
         <div class="box-body">
-            <table class="table table-bordered tabel-json">
+            @if ($message = Session::get('success'))
+              <div class="alert alert-success alert-block">
+                <button type="button" class="close" data-dismiss="alert">×</button> 
+                  <strong>{{ $message }}</strong>
+              </div>
+            @endif
+            <table class="table table-bordered table-striped tabel-json">
                 <thead>
                     <tr>
                         <th style="text-align: center;">No</th>
-                        <th style="text-align: center;">Nama Distributor</th>
+                        <th style="text-align: center;">Distributor</th>
                         <th style="text-align: center;">Alamat</th>
                         <th style="text-align: center;">No HP</th>
                         <th style="text-align: center;">Aksi</th>
@@ -38,12 +56,12 @@
                     <?php $no=1; foreach ($model as $value): ?>
                         <tr>
                             <td style="text-align: center; width: 5%">{{ $no++ }}</td>
-                            <td>{{ $value->nama }}</td>
+                            <td style="width: 25%;">{{ $value->nama }}</td>
                             <td>{{ $value->alamat }}</td>
-                            <td style="text-align: center;">{{ $value->no_hp }}</td>
-                            <td style="text-align: center;">
-                                <a href ="{{ url('ref-distributor/ubah').'/'.$value->id }}" class="btn btn-sm btn-warning" style="margin-right:5px;"><i class="fa fa-edit"></i> </a>
-                                <a href ="{{ url('ref-distributor/hapus').'/'.$value->id }}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> </a>
+                            <td style="text-align: center; width: 12%">{{ $value->no_hp }}</td>
+                            <td style="text-align: center; width: 12%">
+                                <a href ="{{ url('ref-distributor/ubah').'/'.$value->id }}" class="btn btn-xs btn-warning" style="margin-right:5px;"><i class="fa fa-edit"></i> Ubah</a>
+                                <!-- <a href ="{{ url('ref-distributor/hapus').'/'.$value->id }}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Hapus</a> -->
                             </td>
                         </tr>
                     <?php endforeach ?>

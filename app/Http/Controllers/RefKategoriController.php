@@ -34,7 +34,7 @@ class RefKategoriController extends Controller
     		'kategori' => $request->kategori,
     	]);
 
-    	return redirect('ref-kategori/index');
+    	return redirect('ref-kategori/tambah')->with(['success' => 'Data berhasi disimpan']);
     }
 
     public function Ubah($id) {
@@ -48,7 +48,7 @@ class RefKategoriController extends Controller
         $model->kategori = $request->kategori;
         $model->save();
 
-        return redirect('ref-kategori/index');
+        return redirect('ref-kategori/index')->with(['success' => 'Data berhasi diubah']);
     }
 
     public function Hapus($id) {

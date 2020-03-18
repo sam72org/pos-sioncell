@@ -10,7 +10,7 @@ use Datatables;
 class RefBarangController extends Controller
 {
     public function Index() {
-        $model = RefBarang::all();
+        $model = RefBarang::orderBy('nama_barang', 'ASC')->get();
     	return view('ref-barang/index', ['model' => $model]);
     }
 
@@ -32,21 +32,44 @@ class RefBarangController extends Controller
     }
 
     public function Create(Request $request) {
-        $this->validate($request, [
-            'nama_barang' => 'required',
-            'stok' => 'required|numeric',
-            'harga_beli' => 'required|numeric',
-            'kategori' => 'required',
-        ]);
 
-    	$model = RefBarang::create([
-    		'nama_barang' => $request->nama_barang,
-            'stok' => $request->stok,
-            'harga_beli' => $request->harga_beli,
-    		'kategori_id' => $request->kategori,
-    	]);
+        $cek_barcode = RefBarang::where('kode_barcode', $request->kode_barcode)->first();
+        if (isset($cek_barcode)) {
+            return 1;
+        }
+        else {
+            $model = new RefBarang;
+            $model->kode_barcode    = $request->kode_barcode;
+            $model->nama_barang     = $request->nama_barang;
+            $model->kategori_id     = $request->kategori;
+            $model->harga_beli      = $request->harga_beli;
+            $model->harga_jual      = $request->harga_jual;
+            $model->harga_nego      = $request->harga_nego;
+            $model->stok            = $request->stok;
+            $model->save();
+        }        
 
-    	return redirect('ref-barang/index');
+        // $this->validate($request, [
+        //     'kode_barcode' => 'required|max:20',
+        //     'nama_barang' => 'required',
+        //     'stok' => 'required|numeric',
+        //     'harga_beli' => 'required|numeric',
+        //     'harga_jual' => 'required|numeric',
+        //     'harga_nego' => 'required|numeric',
+        //     'kategori' => 'required',
+        // ]);
+
+    	// $model = RefBarang::create([
+     //        'kode_barcode' => $request->kode_barcode,
+    	// 	'nama_barang' => $request->nama_barang,
+     //        'kategori_id' => $request->kategori,
+     //        'harga_beli' => $request->harga_beli,
+     //        'harga_jual' => $request->harga_jual,
+     //        'harga_nego' => $request->harga_nego,
+     //        'stok' => $request->stok,
+    	// ]);
+
+    	// return redirect('ref-barang/tambah')->with(['success' => 'Data berhasil ditambah']);
     }
 
     public function Ubah($id) {
@@ -64,13 +87,16 @@ class RefBarangController extends Controller
 
     public function Update($id, Request $request) {
         $model = RefBarang::find($id);
+        $model->kode_barcode = $request->kode_barcode;
         $model->nama_barang = $request->nama_barang;
         $model->harga_beli = $request->harga_beli;
+        $model->harga_jual = $request->harga_jual;
+        $model->harga_nego = $request->harga_nego;
         $model->stok = $request->stok;
         $model->kategori_id = $request->kategori;
         $model->save();
 
-        return redirect('ref-barang/index');
+        return redirect('ref-barang/index')->with(['success' => 'Data berhasil diubah']);
     }
 
     public function Hapus($id) {

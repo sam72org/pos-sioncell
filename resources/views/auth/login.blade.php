@@ -4,10 +4,10 @@
 
 <section class="content">
     <div class="login-box">
-        <div class="login-logo" style="color: #f39c12">
-            <b style="color:#000">SION</b>CELL
+        <div class="login-logo" style="color: #51d855">
+            <b style="color:#000">WELL</b>POS
         </div>
-        <div class="login-box-body" style="border-top :4px solid #f39c12;border-bottom :3px solid #f39c12">
+        <div class="login-box-body" style="border-top :4px solid #51d855;border-bottom :3px solid #51d855">
             <p class="login-box-msg">SIGN IN </p>
 
             <form class="form-vertical" method="POST" action="{{ route('login') }}">
@@ -17,7 +17,7 @@
                     <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                 </div> -->
 
-                <div class="form-group has-feedback{{ $errors->has('email') ? ' has-error' : '' }}">
+                <!-- <div class="form-group has-feedback{{ $errors->has('email') ? ' has-error' : '' }}">
                    <input type="text" class="form-control" name="email" value="{{ old('email') }}" placeholder="Username" autofocus="" autocomplete="off">
                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
 
@@ -26,10 +26,21 @@
                          <strong>{{ $errors->first('email') }}</strong>
                       </span>
                    @endif
+                </div> -->
+
+                <div class="form-group has-feedback{{ $errors->has('username') ? ' has-error' : '' }}">
+                   <input type="text" class="form-control" name="username" value="{{ old('username') }}" placeholder="Username" autofocus="" autocomplete="off">
+                   <span class="glyphicon glyphicon-user form-control-feedback"></span>
+
+                   @if ($errors->has('username'))
+                      <span class="help-block">
+                         <strong>{{ $errors->first('username') }}</strong>
+                      </span>
+                   @endif
                 </div>
 
                 <div class="form-group has-feedback {{ $errors->has('password') ? ' has-error' : '' }}">
-                    <input type="password" class="form-control" name="password" placeholder="Password" required>
+                    <input type="password" class="form-control" name="password" placeholder="Password">
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
 
                     @if ($errors->has('password'))
@@ -55,7 +66,7 @@
 
         </div><br>
         <div style="text-align:center;color:#000">
-            <small>&copy; Copyright 2019 SION CELL.</small>
+            <small>&copy; Copyright 2019 WELLPOS.</small>
         </div>
     </div>
 </section>

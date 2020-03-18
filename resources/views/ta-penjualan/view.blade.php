@@ -8,29 +8,25 @@
             <small>{{ date('d-m-Y H:i') }} </small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-            <li><a href="/ta-order">List Order</a></li>
+            <li><a href="{{ url('/') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li><a href="{{ url('ta-penjualan/index') }}">Penjualan</a></li>
             <li class="active">View</li>
         </ol>
     </section>
 
-    <section class="content col-md-12">
+    <section class="content">
         <div class="box box-primary">
             <div class="box-header with-border"> 
-                <h2 class="box-title"><i class="fa fa-info"></i> Detail Penjualan Barang</h2>
+                <h2 class="box-title"><i class="fa fa-info"></i> Detail Penjualan Barang #{{ $model1->no_penjualan }}</h2>
             </div>
             
             <div class="box-body">
                 <div class="row invoice-info">
                     <div class="col-sm-4 invoice-col">
-                        <b>No. Bukti <span style="padding-left: 55px; padding-right: 10px;"> : </span> {{ $model1->no_penjualan }}</b><br>
-                        <b>Pelanggan <span style="padding-left: 47px; padding-right: 10px;"> : </b></span> <?php if ($model1->pelanggan_id == 0): ?>
-                                Umum
-                            <?php else: ?>
-                                {{ $model1->pelanggan->nama }}
-                            <?php endif ?>
+                        <b>No. Faktur <span style="padding-left: 55px; padding-right: 10px;"> : </span> {{ $model1->no_penjualan }}</b><br>
+                        <b>Kasir <span style="padding-left: 88px; padding-right: 10px;"> : </b></span> {{ $model1->user->name }}
                         <br>
-                        <b>Waktu Transaksi <span style="padding-left: 11px; padding-right: 10px;"> : </b></span> {{ date('d-m-Y H:i', strtotime($model1->created_at)) }}
+                        <b>Waktu Transaksi <span style="padding-left: 18px; padding-right: 10px;"> : </b></span> {{ date('d-m-Y H:i', strtotime($model1->created_at)) }}
                         <br><br>
                     </div>
                 </div>
@@ -54,12 +50,12 @@
                                         $subtotal = $value->sub_total;
                                         $total += $subtotal;
                                     ?>
-                                    <tr>
-                                        <td>{{ $barang->nama_barang }}</td>
-                                        <td style="text-align: center;">{{ number_format($value->harga,0,",",".") }}</td>
-                                        <td style="text-align: center;">{{ $value->qty }}</td>
-                                        <td style="text-align: right;">{{ number_format($subtotal,0,",",".") }}</td>
-                                    </tr>
+                                        <tr>
+                                            <td>{{ $barang->nama_barang }}</td>
+                                            <td style="text-align: center;">{{ number_format($value->harga,0,",",".") }}</td>
+                                            <td style="text-align: center;">{{ $value->qty }}</td>
+                                            <td style="text-align: right;">{{ number_format($subtotal,0,",",".") }}</td>
+                                        </tr>
                                     <?php endforeach ;
                                 ?>
                             </tbody>

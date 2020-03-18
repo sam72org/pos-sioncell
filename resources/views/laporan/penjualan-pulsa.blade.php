@@ -4,7 +4,7 @@
 
     <section class="content-header">
         <h1>
-            Laporan Penjualan
+            Laporan Penjualan Pulsa
             <small>{{ date('d-m-Y H:i') }} </small>
         </h1>
         <ol class="breadcrumb">
@@ -34,7 +34,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="date form-control pull-right" placeholder="Tanggal Awal" id="tgl_awal">
+                                <input type="text" class="date form-control pull-right" autocomplete="off" placeholder="Tanggal Awal" id="tgl_awal">
                             </div>
                         </div>
                     </div>
@@ -47,22 +47,22 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="date form-control pull-right" placeholder="Tanggal Akhir" id="tgl_akhir">
+                                <input type="text" class="date form-control pull-right" autocomplete="off" placeholder="Tanggal Akhir" id="tgl_akhir">
                             </div>
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-flat btn-primary" id="btn-laporan-cari"><i class="fa fa-search"></i> Tampilkan</button>
+                        <button class="btn btn-flat btn-primary" id="btn_laporan_cari_pulsa"><i class="fa fa-search"></i> Tampilkan</button>
 
                         <input type="hidden" id="tgl-awal">
                         <input type="hidden" id="tgl-akhir">
-                        <button class="btn btn-flat btn-warning" id="btn-print-penjualan"><i class="fa fa-print"></i> Print</button>
+                        <button class="btn btn-flat btn-warning" id="btn_print_penjualan_pulsa"><i class="fa fa-print"></i> Print</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <div class="box-body" id="data-penjualan">
+        <div class="box-body" id="data-penjualan-pulsa">
             
         </div>
     </div>
@@ -73,16 +73,10 @@
 @push('scripts')
 <script>
 
-// $(document).ready(function() {
-//     $('.tabel-json').DataTable({
-//         "order": [[ 0, "desc" ]]
-//     });
-// });
-
-$('#tgl_awal').blur(function() {
-    var awal = $('#tgl_awal').val();
-    $('#tgl-awal').val(awal);
-    
+$(document).ready(function() {
+    $('.tabel-json').DataTable({
+        "order": [[ 0, "desc" ]]
+    });
 });
 
 $('#tgl_awal').blur(function() {
@@ -91,7 +85,13 @@ $('#tgl_awal').blur(function() {
     
 });
 
-$(document).on('click', '#btn-laporan-cari', function(e) {
+$('#tgl_awal').blur(function() {
+    var awal = $('#tgl_awal').val();
+    $('#tgl-awal').val(awal);
+    
+});
+
+$(document).on('click', '#btn_laporan_cari_pulsa', function(e) {
     e.preventDefault();
 
     var tgl_awal   = $('#tgl_awal').val();
@@ -110,19 +110,19 @@ $(document).on('click', '#btn-laporan-cari', function(e) {
     else {
         $.ajax({
             type: "GET",
-            url: "get-penjualan",
+            url: "get-penjualan-pulsa",
             data: {
                 'tgl_awal' : tgl_awal,
                 'tgl_akhir' : tgl_akhir,
             },
-            success: function(data){
-                $('#data-penjualan').html(data.html);
+            success: function(data) {
+                $('#data-penjualan-pulsa').html(data.html);
             },
         });
     }
 });
 
-$(document).on('click', '#btn-print-penjualan', function(e) {
+$(document).on('click', '#btn_print_penjualan_pulsa', function(e) {
     e.preventDefault();
 
     var tgl_awal   = $('#tgl_awal').val();
@@ -135,7 +135,7 @@ $(document).on('click', '#btn-print-penjualan', function(e) {
         alert ('Silahkan Pilih Periode Tanggal Akhir !');
     }
     else {
-        window.open('print-penjualan/' + tgl_awal + '/' + tgl_akhir, '_blank');
+        window.open('print-penjualan-pulsa/' + tgl_awal + '/' + tgl_akhir, '_blank');
     }
 });
 

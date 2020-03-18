@@ -42,7 +42,7 @@ class RefDistributorController extends Controller
     		'no_hp' => $request->no_hp,
     	]);
 
-    	return redirect('/ref-distributor/index');
+    	return redirect('/ref-distributor/tambah')->with(['success' => 'Data berhasil disimpan.']);
     }
 
     public function Ubah($id) {
@@ -58,7 +58,7 @@ class RefDistributorController extends Controller
         $model->no_hp = $request->no_hp;
         $model->save();
 
-        return redirect('/ref-distributor/index');
+        return redirect('/ref-distributor/index')->with(['success' => 'Data berhasil diubah.']);
     }
 
     public function Hapus($id) {

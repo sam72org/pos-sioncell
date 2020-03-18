@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <title>Print Penjualan</title>
+    <title>WELPOS | Print Laporan Pembelian Barang</title>
     </head>
     <style>
       @font-face {
-        font-family: 'Tahoma';
+        font-family: 'Arial';
         font-weight: normal;
         font-style: normal;
         font-variant: normal;
         src: url("font url");
       }
       body {
-        font-family: Tahoma, sans-serif; 
+        font-family: Arial, sans-serif; 
       }
       .table td, th {
         border-top: 1px solid;
@@ -21,11 +21,28 @@
         border-left: 1px solid;
         padding: 5px 5px 5px 5px;
       }
+      .title {
+        font-size: 16px;
+        margin-bottom: -25px;
+        text-align: center;
+      }
+      .title2 {
+        font-size: 16px;
+        margin-bottom: 0px;
+        text-align: center;
+      }
+      .subtitle {
+        font-size: 12px;
+        margin-bottom: 5px;
+        text-align: left;
+      }
       </style>
     <body>
 
         <center>
-            <h4 style="text-decoration: underline;">LAPORAN PEMBELIAN</h4>
+            <h5 class="title">LAPORAN PEMBELIAN BARANG</h5>
+            <h5 class="title2">ARIEL PONSEL</h5>
+            <h5 class="subtitle">Tanggal : {{ date('d-m-Y', strtotime($awal)) }} s/d {{ date('d-m-Y', strtotime($akhir)) }}</h5>
         </center>
 
         <table class="table table-bordered" width="100%" cellspacing="0" cellpadding="0">       
@@ -49,7 +66,7 @@
                         <td style="text-align: center; font-size: 12px;">{{ $no++ }}</td>
                         <td style="font-size: 12px;">{{ $data->no_pembelian }}</td>
                         <td style="text-align: left; font-size: 12px;">{{ $data->distributor->nama }}</td>
-                        <td style="text-align: center; font-size: 12px;">{{ date('d-m-Y', strtotime($data->tanggal)) }}</td>
+                        <td style="text-align: center; font-size: 12px;">{{ date('d-m-Y', strtotime($data->created_at)) }}</td>
                         <td style="text-align: right; font-size: 12px;">{{ number_format($data->grand_total,0,",",".") }}</td>
                     </tr>
                 <?php endforeach ?>
